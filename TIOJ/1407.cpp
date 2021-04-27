@@ -4,14 +4,15 @@ inline char RC(){static char buf[65536],*p=buf,*q=buf;return p==q&&(q=(p=buf)+re
 inline int R(){static char c;int a;while((c=RC())<'0');a=c^'0';while((c=RC())>='0')a*=10,a+=c^'0';return a;}
 inline void W(int n){char OB[12],OP=0,buf[12],p;if(n==0)OB[OP++]='0';p=0;while(n)buf[p++]='0'+(n%10),n/=10;for(--p;p>=0;--p)OB[OP++]=buf[p];write(1,OB,OP);}
 
+inline int min(int a, int b){ return a < b ? a : b;}
 inline void eek(int &a, int b){ if(a < b) a = b ;}
 
 const int N = 1e6;
+int n, t, e, ans, dp[N+1], lim;
 int ww[N], mm[N];
-int n, t, e, ans, dp[N+1];
 
 inline void upd(int w, int m){
-	for(int j = t - w; j >= 0; --j)
+	for(int j = min(t, lim) - w; j >= 0; --j)
 		eek(dp[j + w], dp[j] + m);
 }
 
@@ -25,6 +26,7 @@ int main(){
 	}
 	t = R();
 	for(int i = 0; i < e; ++i){
+		if(lim < t) lim += ww[i];
 		upd(ww[i], mm[i]);
 	}
 	for(int i = 0; i <= t; ++i)
