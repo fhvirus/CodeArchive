@@ -1,33 +1,34 @@
+// Knapsack DP is harder than FFT.
 #pragma GCC optimize("Ofast")
-#pragma GCC optimize("unroll-loops")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
-#pragma loop_opt(on)
-#include<cstdio>
-#define FOR(i,n) for(int i=1;i<=n;++i)
-const int S = 1<<16;
-inline char readchar(){
-	static char buf[S], *p = buf, *q = buf;
-	return (p==q&&(q=(p=buf)+fread(buf,1,S,stdin))==buf) ? EOF : *p++;
-}
-inline int R(){
-	int ans = 0; char c = readchar(); bool minus = false;
-	while(c<'-') c=readchar();
-	if(c=='-') minus = true, c = readchar();
-	while(c>='0') ans=(ans<<3)+(ans<<1)+(c^'0'), c=readchar();
-	return minus ? -ans : ans;
-}
-#define int long long
-bool owo = true;
-int n, a[501][501], eek[501], ans, in, sum;
-signed main(){
+#include<unistd.h>
+typedef long long ll;
+inline char RC(){static char buf[65536],*p=buf,*q=buf;return p==q&&(q=(p=buf)+read(0,buf,65536))==buf?-1:*p++;}
+inline ll R(){static char c;ll a;while(((c=RC())<'0'||c>'9')&&c!='-'&&c!=-1);if(c=='-'){a=0;while((c=RC())>='0'&&c<='9')a*=10,a-=c^'0';}else{a=c^'0';while((c=RC())>='0'&&c<='9')a*=10,a+=c^'0';}return a;}
+inline void W(ll n){char OB[20],OP=0,buf[20],p;if(n==0)OB[OP++]='0';p=0;while(n)buf[p++]='0'+(n%10),n/=10;for(--p;p>=0;--p)OB[OP++]=buf[p];write(1,OB,OP);}
+
+const int N = 500;
+
+int n;
+ll a[N][N], b[N];
+
+int main(){
 	n = R();
-	FOR(i, n) FOR(j, n) in = R(), a[i][j] = in + a[i-1][j], owo &= in >= 0, sum += in;
-	if(owo){ printf("%lld", sum); return 0;}
-	for(int u = 0; u < n; ++u){
-		for(int d = u + 1; d <= n; ++d){
-			int jizz = 0;
-			FOR(i, n) jizz += a[d][i] - a[u][i], ans = ans > jizz ? ans : jizz, (jizz < 0) and (jizz = 0);
+	for(int i = 0; i < n; ++i)
+		for(int j = 0; j < n; ++j) a[i][j] = R();
+
+	ll ans = 0, sum = 0;
+	for(int i = 0; i < n; ++i){
+		for(int k = 0; k < n; ++k) b[k] = 0;
+		for(int j = i; j < n; ++j){
+			sum = 0;
+			for(int k = 0; k < n; ++k){
+				b[k] += a[j][k];
+				sum += b[k];
+				if(sum < 0) sum = 0;
+				if(ans < sum) ans = sum;
+			}
 		}
 	}
-	printf("%lld\n", ans);
+	W(ans);
+	return 0;
 }

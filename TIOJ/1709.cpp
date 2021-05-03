@@ -1,17 +1,11 @@
 #pragma GCC optimize("Ofast")
 #pragma loop_opt(on)
-#include<cstdio>
-const int S = 1<<18;
-inline char readchar(){
-	static char buf[S], *p = buf, *q = buf;
-	return (p==q&&(q=(p=buf)+fread(buf,1,S,stdin))==buf) ? EOF : *p++;
-}
-inline int R(){
-	int ans = 0, c = readchar();
-	while(c<'0') c=readchar();
-	while(c>='0') ans=(ans<<3)+(ans<<1)+(c^'0'), c=readchar();
-	return ans;
-}
+#pragma GCC optimize("Ofast")
+#include<unistd.h>
+inline char RC(){static char buf[65536],*p=buf,*q=buf;return p==q&&(q=(p=buf)+read(0,buf,65536))==buf?-1:*p++;}
+inline int R(){static char c;int a;while((c=RC())<'0'&&c!=-1);if(c==-1)return 0;a=c^'0';while((c=RC())>='0')a*=10,a+=c^'0';return a;}
+inline void W(long long n){char OB[20],OP=0,buf[20],p;if(n==0)OB[OP++]='0';p=0;while(n)buf[p++]='0'+(n%10),n/=10;for(--p;p>=0;--p)OB[OP++]=buf[p];write(1,OB,OP);}
+
 #include<vector>
 #include<algorithm>
 #include<unordered_set>
@@ -69,6 +63,7 @@ int centroidDecomp(int u, int p){
 	getSize(u, p);
 	int c = getCentroid(u, p, sz[u]);
 	vis[c] = true;
+	if(sz[u] < k) return 0;
 	// solve with root = c
 	vector<int> alldis(k + 1, 0);
 	alldis[0] = cnt[c];
@@ -93,7 +88,7 @@ int main(){
 	n = R(), m = R(), k = R();
 	for(int i = 0; i <= n; ++i) head[i] = -1;
 
-	unordered_set<int> sss;
+	unordered_set<long long> sss;
 	for(int a, b, i = 0, j = 0; i < m; ++i){
 		a = R(), b = R();
 		if(a == b) continue;
@@ -116,7 +111,9 @@ int main(){
 
 	// centroid decomp.
 	for(int i = 1; i <= bcnt; ++i)
-		if(!vis[i]) centroidDecomp(i, 0);
+		if(!vis[i])
+			centroidDecomp(i, 0);
 
-	printf("%lld", ans);
+
+	W(ans);
 }
