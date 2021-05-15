@@ -1,3 +1,4 @@
-# Code-Archieve
+# CodeArchive
 
-Public backup of FHVirus' ugly codes.
+FHVirus' CP Code Archive.
+Feel free to take a look.
