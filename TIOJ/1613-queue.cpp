@@ -20,69 +20,29 @@ template<class T,size_t N>OIU(array<T,N>a){return O<<vector<T>(AI(a));}template<
 #define debug(...) ((void)0)
 #endif
 
-const int N = 1010, C = 127;
-char a[N], b[N], ans[N];
-int n, m, len;
+const int N = 1000001;
+int n;
+ll a[N], b[N], ah, bh, bt;
 
-short dp[N][N];
-short pa[N][C], pb[N][C];
-
-void LCS(){
-	for(int i = 1; i <= n; ++i){
-		for(int j = 1; j <= m; ++j){
-			if(a[i] == b[j]) dp[i][j] = dp[i-1][j-1] + 1;
-			else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
-		}
-	}
-}
-
-void BT(){
-	if(dp[n][m] == 0){
-		len = 0;
-		return;
-	}
-
-	for(int i = 1; i <= n; ++i)
-		for(int c = 33; c < C; ++c)
-			pa[i][c] = (a[i] == c ? i : pa[i-1][c]);
-	for(int i = 1; i <= m; ++i)
-		for(int c = 33; c < C; ++c)
-			pb[i][c] = (b[i] == c ? i : pb[i-1][c]);
-
-	len = 0;
-	int i = n, j = m;
-	for(int k = 0; k < dp[n][m]; ++k){
-		for(int c = 33; c < C; ++c){
-			if(pa[i][c] > 0 and pb[j][c] > 0 and
-					dp[pa[i][c]-1][pb[j][c]-1] == dp[i][j] - 1){
-				ans[len++] = c;
-				i = pa[i][c] - 1, j = pb[j][c] - 1;
-				break;
-			}
-		}
-	}
-}
-
-void solve(){
-	scanf("%s%s", a, b);
-	n = strlen(a); a[n] = 0;
-	m = strlen(b); b[m] = 0;
-	if(n == m and strcmp(a, b) == 0){
-		puts(a);
-		return;
-	}
-	reverse(a, a + n + 1);
-	reverse(b, b + m + 1);
-
-	LCS();
-	BT();
-
-	if(len == 0) puts("妹萌えこそ正義なのさ！");
-	else ans[len] = 0, puts(ans);
+ll get(){
+	if(ah == n or (bh < bt and a[ah] > b[bh])) return b[bh++];
+	return a[ah++];
 }
 
 signed main(){
-	int t; scanf("%d", &t);
-	for(; t; --t) solve();
+	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+	cin >> n;
+	for(int i = 0; i < n; ++i) cin >> a[i];
+	sort(a, a + n);
+
+	ll ans = 0;
+	for(int i = 1; i < n; ++i){
+		ll v = get() + get();
+		ans += v;
+		b[bt++] = v;
+	}
+
+	cout << ans;
 	return 0;
 }

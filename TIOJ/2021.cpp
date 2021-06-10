@@ -20,69 +20,65 @@ template<class T,size_t N>OIU(array<T,N>a){return O<<vector<T>(AI(a));}template<
 #define debug(...) ((void)0)
 #endif
 
-const int N = 1010, C = 127;
-char a[N], b[N], ans[N];
-int n, m, len;
+const int M = 1e9 + 7;
+using Mat  = vector<vector<ll>>;
 
-short dp[N][N];
-short pa[N][C], pb[N][C];
-
-void LCS(){
-	for(int i = 1; i <= n; ++i){
-		for(int j = 1; j <= m; ++j){
-			if(a[i] == b[j]) dp[i][j] = dp[i-1][j-1] + 1;
-			else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+Mat operator*(Mat a, Mat b){
+	int n = a.size();
+	Mat r(n, vector<ll>(n, 0));
+	for(int i = 0; i < n; ++i)
+		for(int j = 0; j < n; ++j){
+			for(int k = 0; k < n; ++k)
+				r[i][j] += a[i][k] * b[k][j] % M;
+			r[i][j] %= M;
 		}
-	}
+	return r;
 }
 
-void BT(){
-	if(dp[n][m] == 0){
-		len = 0;
-		return;
+Mat mpow(Mat x, ll e){
+	int n = x.size();
+	Mat r = x;
+	for(int i = 0; i < n; ++i) for(int j = 0; j < n; ++j) r[i][j] = (i == j);
+	while(e > 0){
+		if(e & 1) r = r * x;
+		x = x * x;
+		e >>= 1;
 	}
-
-	for(int i = 1; i <= n; ++i)
-		for(int c = 33; c < C; ++c)
-			pa[i][c] = (a[i] == c ? i : pa[i-1][c]);
-	for(int i = 1; i <= m; ++i)
-		for(int c = 33; c < C; ++c)
-			pb[i][c] = (b[i] == c ? i : pb[i-1][c]);
-
-	len = 0;
-	int i = n, j = m;
-	for(int k = 0; k < dp[n][m]; ++k){
-		for(int c = 33; c < C; ++c){
-			if(pa[i][c] > 0 and pb[j][c] > 0 and
-					dp[pa[i][c]-1][pb[j][c]-1] == dp[i][j] - 1){
-				ans[len++] = c;
-				i = pa[i][c] - 1, j = pb[j][c] - 1;
-				break;
-			}
-		}
-	}
+	return r;
 }
 
-void solve(){
-	scanf("%s%s", a, b);
-	n = strlen(a); a[n] = 0;
-	m = strlen(b); b[m] = 0;
-	if(n == m and strcmp(a, b) == 0){
-		puts(a);
-		return;
-	}
-	reverse(a, a + n + 1);
-	reverse(b, b + m + 1);
+ll f(ll n){
+	static const Mat trans({
+		{1, 1, 0},
+		{1, 0, 0},
+		{1, 0, 1}
+	});
+	Mat r = mpow(trans, n);
+	return (r[2][0] + r[2][1] + r[2][2]) % M;
+}
+ll f2(ll n){
+	static const Mat trans({
+		{0, 1, 0, 0},
+		{1, 1, 2, 0},
+		{0, 1, 1, 0},
+		{1, 1, 2, 1}
+	});
+	Mat r = mpow(trans, n);
+	return (r[3][1] + r[3][3]) % M;
+}
 
-	LCS();
-	BT();
-
-	if(len == 0) puts("妹萌えこそ正義なのさ！");
-	else ans[len] = 0, puts(ans);
+ll solve(ll n){
+	--n;
+	ll ans = (f2(n) - f(n) + M) % M;
+	return ans * ((M + 1) / 2) % M;
 }
 
 signed main(){
-	int t; scanf("%d", &t);
-	for(; t; --t) solve();
+	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+	int n; cin >> n;
+	for(ll s, t; n; --n){
+		cin >> s >> t;
+		cout << (solve(t) - solve(s-1) + M) % M << '\n';
+	}
 	return 0;
 }

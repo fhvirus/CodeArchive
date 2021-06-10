@@ -20,69 +20,43 @@ template<class T,size_t N>OIU(array<T,N>a){return O<<vector<T>(AI(a));}template<
 #define debug(...) ((void)0)
 #endif
 
-const int N = 1010, C = 127;
-char a[N], b[N], ans[N];
-int n, m, len;
+const int N = 100001, C = 1000000, INF = 8e7;
+int n, b, a[N];
 
-short dp[N][N];
-short pa[N][C], pb[N][C];
-
-void LCS(){
-	for(int i = 1; i <= n; ++i){
-		for(int j = 1; j <= m; ++j){
-			if(a[i] == b[j]) dp[i][j] = dp[i-1][j-1] + 1;
-			else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
-		}
-	}
+inline int cdiv(int a, int b){ return (a + b - 1) / b;}
+int calc(int x, int t){
+	if(x <= t) return 0;
+	if(t == 0) return INF;
+	int maxLayer = __lg(x) + 1;
+	if(maxLayer > t or (maxLayer == t and x > (1 << (t - 1)))) return INF;
+	for(int h = 1; h <= t && h <= 20; ++h)
+		if(((t - h) << h) > x)
+			return cdiv(x - (1 << h), t - h - 1) - 1;
+	return INF;
 }
 
-void BT(){
-	if(dp[n][m] == 0){
-		len = 0;
-		return;
+bool check(int m){
+	int cnt = 0;
+	for(int i = 0; i < n; ++i){
+		cnt += calc(a[i], m);
+		if(cnt > b) return false;
 	}
-
-	for(int i = 1; i <= n; ++i)
-		for(int c = 33; c < C; ++c)
-			pa[i][c] = (a[i] == c ? i : pa[i-1][c]);
-	for(int i = 1; i <= m; ++i)
-		for(int c = 33; c < C; ++c)
-			pb[i][c] = (b[i] == c ? i : pb[i-1][c]);
-
-	len = 0;
-	int i = n, j = m;
-	for(int k = 0; k < dp[n][m]; ++k){
-		for(int c = 33; c < C; ++c){
-			if(pa[i][c] > 0 and pb[j][c] > 0 and
-					dp[pa[i][c]-1][pb[j][c]-1] == dp[i][j] - 1){
-				ans[len++] = c;
-				i = pa[i][c] - 1, j = pb[j][c] - 1;
-				break;
-			}
-		}
-	}
-}
-
-void solve(){
-	scanf("%s%s", a, b);
-	n = strlen(a); a[n] = 0;
-	m = strlen(b); b[m] = 0;
-	if(n == m and strcmp(a, b) == 0){
-		puts(a);
-		return;
-	}
-	reverse(a, a + n + 1);
-	reverse(b, b + m + 1);
-
-	LCS();
-	BT();
-
-	if(len == 0) puts("妹萌えこそ正義なのさ！");
-	else ans[len] = 0, puts(ans);
+	return true;
 }
 
 signed main(){
-	int t; scanf("%d", &t);
-	for(; t; --t) solve();
+	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+	cin >> n >> b;
+	for(int i = 0; i < n; ++i) cin >> a[i];
+
+	int l = 1, r = *max_element(a, a + n), m;
+	while(l < r){
+		m = (l + r) / 2;
+		if(check(m)) r = m;
+		else l = m + 1;
+	}
+
+	cout << l;
 	return 0;
 }
+
