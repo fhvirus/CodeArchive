@@ -20,42 +20,34 @@ template<class T,size_t N>OIU(array<T,N>a){return O<<vector<T>(AI(a));}template<
 #define debug(...) ((void)0)
 #endif
 
-const int P = 131;
-const int MOD = 1e9+9;
-inline int mad(int u, int v){
-	u += v - MOD;
-	u += MOD & (u >> 31);
-	return u;
-}
-inline int mul(int u, int v){
-	return (ll) u * v % MOD;
-}
+typedef tuple<int, int, int> tii;
 
 signed main(){
 	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-	string s; getline(cin, s);
-	int n = s.size();
-	vector<int> p(n), hl(n), hr(n);
-	p[0] = 1; for(int i = 1; i < n; ++i) p[i] = mul(p[i-1], P);
-	hl[0] = s[0]; for(int i = 1; i < n; ++i) hl[i] = mad(mul(hl[i-1], P), s[i]);
-	hr[n-1] = s[n-1]; for(int i = n-2; ~i; --i) hr[i] = mad(mul(hr[i+1], P), s[i]);
+	int n, m, x, y;
+	while(cin >> n >> m >> x >> y){
+		int l = y-1, r = m-y;
+		int u = x-1, d = n-x;
+		int s = (l xor r xor u xor d);
+		if(s == 0){
+			cout << "No winning strategy.\n";
+			continue;
+		}
 
-	vector<int> ans;
-	if(hl[n-1] == hr[0]) ans.pb(0);
-	for(int i = 0; i < n-1; ++i){
-		int ul = hl[i], ur = mad(hl[n-1], MOD-mul(hl[i], p[n-i-1]));
-		int vl = mad(hr[0], MOD-mul(hr[i+1], p[i+1])), vr = hr[i+1];
-		int u = mad(ul, mul(ur, p[i+1]));
-		int v = mad(vr, mul(vl, p[n-i-1]));
-		if(u == v) ans.pb(i+1);
+		tii ans(-1, -1, -1); int e;
+		e = u - (s xor u);
+		if(u >= e and e >= 0) ans = max(ans, tii(m*e, 1, -e));
+		e = d - (s xor d);
+		if(d >= e and e >= 0) ans = max(ans, tii(m*e, 1, e-n));
+		e = l - (s xor l);
+		if(l >= e and e >= 0) ans = max(ans, tii(n*e, 0, -e));
+		e = r - (s xor r);
+		if(r >= e and e >= 0) ans = max(ans, tii(n*e, 0, e-m));
+
+		auto [cnt, dir, pos] = ans; pos = -pos;
+		cout << (dir ? "horizontal " : "vertical ")
+			<< pos << ' ' << cnt << '\n';
 	}
-
-	if(ans.size() == 0){
-		cout << "none\n";
-	} else {
-		cout << ans.size() << ": ";
-		for(int i: ans) cout << i << ' ';
-	}
-
 	return 0;
 }
+

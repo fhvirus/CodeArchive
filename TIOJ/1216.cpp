@@ -20,42 +20,36 @@ template<class T,size_t N>OIU(array<T,N>a){return O<<vector<T>(AI(a));}template<
 #define debug(...) ((void)0)
 #endif
 
-const int P = 131;
-const int MOD = 1e9+9;
-inline int mad(int u, int v){
-	u += v - MOD;
-	u += MOD & (u >> 31);
-	return u;
-}
-inline int mul(int u, int v){
-	return (ll) u * v % MOD;
+void solve(int N, int T){
+	vector<vector<int>> a(N, vector<int>(T+1, 0));
+	int M; cin >> M;
+	for(int p, l, r, i = 0; i < M; ++i){
+		cin >> p >> l >> r; --p;
+		++a[p][l]; --a[p][r];
+	}
+	vector<pii> ans(T+1, pii(0, 0));
+	for(int p = 0; p < N; ++p){
+		auto &v = a[p];
+		for(int i = 1; i < T; ++i)
+			v[i] += v[i-1];
+		int cur = 0;
+		for(int i = T-1; i >= 0; --i){
+			if(v[i] > 0) cur = 0;
+			else ++cur;
+			ans[i] = max(ans[i], pii(cur, -p));
+		}
+	}
+	int Q; cin >> Q;
+	for(int t, i = 0; i < Q; ++i){
+		cin >> t;
+		if(ans[t].ff == 0) cout << "Oh, no!\n";
+		else cout << -ans[t].ss+1 << ' ' << ans[t].ff << '\n';
+	}
+	return;
 }
 
 signed main(){
 	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-	string s; getline(cin, s);
-	int n = s.size();
-	vector<int> p(n), hl(n), hr(n);
-	p[0] = 1; for(int i = 1; i < n; ++i) p[i] = mul(p[i-1], P);
-	hl[0] = s[0]; for(int i = 1; i < n; ++i) hl[i] = mad(mul(hl[i-1], P), s[i]);
-	hr[n-1] = s[n-1]; for(int i = n-2; ~i; --i) hr[i] = mad(mul(hr[i+1], P), s[i]);
-
-	vector<int> ans;
-	if(hl[n-1] == hr[0]) ans.pb(0);
-	for(int i = 0; i < n-1; ++i){
-		int ul = hl[i], ur = mad(hl[n-1], MOD-mul(hl[i], p[n-i-1]));
-		int vl = mad(hr[0], MOD-mul(hr[i+1], p[i+1])), vr = hr[i+1];
-		int u = mad(ul, mul(ur, p[i+1]));
-		int v = mad(vr, mul(vl, p[n-i-1]));
-		if(u == v) ans.pb(i+1);
-	}
-
-	if(ans.size() == 0){
-		cout << "none\n";
-	} else {
-		cout << ans.size() << ": ";
-		for(int i: ans) cout << i << ' ';
-	}
-
+	for(int N, T; cin >> N >> T and N * T != 0; solve(N, T));
 	return 0;
 }

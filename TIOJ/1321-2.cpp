@@ -20,8 +20,8 @@ template<class T,size_t N>OIU(array<T,N>a){return O<<vector<T>(AI(a));}template<
 #define debug(...) ((void)0)
 #endif
 
-const int P = 131;
-const int MOD = 1e9+9;
+const int P = 131, I = 190839696;
+const int MOD = 1e9+7;
 inline int mad(int u, int v){
 	u += v - MOD;
 	u += MOD & (u >> 31);
@@ -30,23 +30,38 @@ inline int mad(int u, int v){
 inline int mul(int u, int v){
 	return (ll) u * v % MOD;
 }
+inline int mow(int x, int e){
+	int r = 1;
+	while(e){
+		if(e & 1) r = mul(r, x);
+		x = mul(x, x);
+		e >>= 1;
+	}
+	return r;
+}
 
 signed main(){
 	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
 	string s; getline(cin, s);
 	int n = s.size();
-	vector<int> p(n), hl(n), hr(n);
-	p[0] = 1; for(int i = 1; i < n; ++i) p[i] = mul(p[i-1], P);
-	hl[0] = s[0]; for(int i = 1; i < n; ++i) hl[i] = mad(mul(hl[i-1], P), s[i]);
-	hr[n-1] = s[n-1]; for(int i = n-2; ~i; --i) hr[i] = mad(mul(hr[i+1], P), s[i]);
+
+	int hls = s[0]; for(int i = 1; i < n; ++i) hls = mad(mul(hls, P), s[i]);
+	int hrs = s[n-1]; for(int i = n-2; ~i; --i) hrs = mad(mul(hrs, P), s[i]);
+	int ul = 0, vr = hrs;
+	int pl = 1, pr = mow(P, n);
 
 	vector<int> ans;
-	if(hl[n-1] == hr[0]) ans.pb(0);
+	if(hls == hrs) ans.pb(0);
 	for(int i = 0; i < n-1; ++i){
-		int ul = hl[i], ur = mad(hl[n-1], MOD-mul(hl[i], p[n-i-1]));
-		int vl = mad(hr[0], MOD-mul(hr[i+1], p[i+1])), vr = hr[i+1];
-		int u = mad(ul, mul(ur, p[i+1]));
-		int v = mad(vr, mul(vl, p[n-i-1]));
+		ul = mad(mul(ul, P), s[i]);
+		vr = mul(mad(vr, MOD-s[i]), I);
+		pl = mul(pl, P);
+		pr = mul(pr, I);
+
+		int ur = mad(hls, MOD-mul(ul, pr));
+		int vl = mad(hrs, MOD-mul(vr, pl));
+		int u = mad(ul, mul(ur, pl));
+		int v = mad(vr, mul(vl, pr));
 		if(u == v) ans.pb(i+1);
 	}
 

@@ -20,42 +20,51 @@ template<class T,size_t N>OIU(array<T,N>a){return O<<vector<T>(AI(a));}template<
 #define debug(...) ((void)0)
 #endif
 
-const int P = 131;
-const int MOD = 1e9+9;
-inline int mad(int u, int v){
-	u += v - MOD;
-	u += MOD & (u >> 31);
-	return u;
+const int kN = 200002;
+
+int N, Q;
+vector<pii> adj[kN];
+
+int dep[kN], par[kN], cost[kN], f[kN];
+
+void dfs(int u, int p){
+	for(auto [v, w]: adj[u]){
+		if(v == p) continue;
+		dep[v] = dep[u] + 1;
+		par[v] = u;
+		cost[v] = w;
+		dfs(v, u);
+	}
 }
-inline int mul(int u, int v){
-	return (ll) u * v % MOD;
-}
+
+int F(int u) { return u == f[u] ? u : f[u] = F(f[u]); }
 
 signed main(){
 	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-	string s; getline(cin, s);
-	int n = s.size();
-	vector<int> p(n), hl(n), hr(n);
-	p[0] = 1; for(int i = 1; i < n; ++i) p[i] = mul(p[i-1], P);
-	hl[0] = s[0]; for(int i = 1; i < n; ++i) hl[i] = mad(mul(hl[i-1], P), s[i]);
-	hr[n-1] = s[n-1]; for(int i = n-2; ~i; --i) hr[i] = mad(mul(hr[i+1], P), s[i]);
-
-	vector<int> ans;
-	if(hl[n-1] == hr[0]) ans.pb(0);
-	for(int i = 0; i < n-1; ++i){
-		int ul = hl[i], ur = mad(hl[n-1], MOD-mul(hl[i], p[n-i-1]));
-		int vl = mad(hr[0], MOD-mul(hr[i+1], p[i+1])), vr = hr[i+1];
-		int u = mad(ul, mul(ur, p[i+1]));
-		int v = mad(vr, mul(vl, p[n-i-1]));
-		if(u == v) ans.pb(i+1);
+	cin >> N >> Q;
+	for(int u, v, w, i = 1; i < N; ++i){
+		cin >> u >> v >> w;
+		adj[u].pb(v, w);
+		adj[v].pb(u, w);
 	}
 
-	if(ans.size() == 0){
-		cout << "none\n";
-	} else {
-		cout << ans.size() << ": ";
-		for(int i: ans) cout << i << ' ';
+	dfs(1, 1);
+
+	for(int i = 1; i <= N; ++i) f[i] = i;
+
+	for(int a, b, i = 0; i < Q; ++i){
+		cin >> a >> b;
+		a = F(a); b = F(b);
+		int ans = 0;
+		while(a != b){
+			if(dep[a] < dep[b]) swap(a, b);
+			ans += cost[a];
+			f[a] = F(par[a]);
+			a = F(a);
+		}
+		cout << ans << '\n';
 	}
 
 	return 0;
 }
+

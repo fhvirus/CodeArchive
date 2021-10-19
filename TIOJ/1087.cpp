@@ -1,23 +1,18 @@
-#pragma GCC optimize("Ofast")
-#pragma GCC optimize("unroll-loops")
-#pragma loop_opt(on)
-#include"lib1087.h"
+#include "lib1087.h"
 
-int a[3] = {10, 15, 20}, compile, comnum;
-int main(){
+signed main(){
 	Initialize();
+	int a[3] = { 10, 15, 20 };
 	while(true){
-		if((a[0] ^ a[1]) < a[2]){
-			Take_Stone(3, a[2] - (a[0] ^ a[1]), &compile, &comnum);
-			a[2] = a[0] ^ a[1];
-		} else if((a[1] ^ a[2]) < a[0]){
-			Take_Stone(1, a[0] - (a[1] ^ a[2]), &compile, &comnum);
-			a[0] = a[1] ^ a[2];
-		} else if((a[2] ^ a[0]) < a[1]){
-			Take_Stone(2, a[1] - (a[2] ^ a[0]), &compile, &comnum);
-			a[1] = a[2] ^ a[0];
+		int s = a[0] xor a[1] xor a[2] xor ( (a[0] > 1) + (a[1] > 1) + (a[2] > 1) <= 1);
+		for(int i = 0; i < 3; ++i){
+			int d = a[i] - (s xor a[i]);
+			if(d <= 0) continue;
+			a[i] -= d;
+			Take_Stone(i+1, d, &i, &d);
+			a[i-1] -= d;
+			break;
 		}
-		a[compile - 1] -= comnum;
 	}
 	return 0;
 }
