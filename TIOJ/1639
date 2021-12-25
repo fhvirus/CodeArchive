@@ -1,0 +1,43 @@
+#include <iostream>
+using namespace std;
+
+// Keywords:
+// Garcia-Wachs Algorithm
+// https://www.acwing.com/solution/content/4733/
+
+typedef long long ll;
+const int kN = 5005;
+int n, m;
+ll x[kN], ans;
+
+void merge(int pos) {
+	ll cur = x[pos - 1] + x[pos];
+	ans += cur;
+	for (int i = pos; i < m; ++i)
+		x[i] = x[i + 1];
+	for (--pos; pos > 1 and x[pos - 1] < cur; --pos)
+		x[pos] = x[pos-1];
+	x[pos] = cur;
+	--m;
+	int tmp = m;
+	while (pos > 2 and x[pos - 2] <= x[pos]) {
+		merge(pos - 1);
+		pos -= tmp - m;
+	}
+}
+
+signed main(){
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+	cin >> n;
+	for (int i = 1; i <= n; ++i) {
+		++m;
+		cin >> x[m];
+		while (m > 2 and x[m - 2] <= x[m])
+			merge(m - 1);
+	}
+	while (m > 1) merge(m);
+	cout << ans << '\n';
+
+	return 0;
+}
