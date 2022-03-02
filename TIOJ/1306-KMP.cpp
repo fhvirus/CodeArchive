@@ -1,54 +1,47 @@
-#pragma Ofast
-#pragma loop-opt(on)
-#pragma GCC target("avx2")
-#include<iostream>
-#include<algorithm>
-#include<string>
+#include <bits/stdc++.h>
 using namespace std;
-const int N = 10001;
-int kmp[N];
-int main(){
-	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-	int t;
-	cin >> t;
-	cin.ignore();
-	for(; t; --t){
-		string s;
-		// cin >> s;
-		getline(cin, s);
-		int q;
-		cin >> q;
-		cin.ignore();
-		for(; q; --q){
-			string w;
-			// cin >> w;
-			getline(cin, w);
-			int ws = w.size(), ss = s.size(), ans = 0;
-			kmp[0] = 0;
-			for(int i = 1; i < ws; ++i){
-				kmp[i] = kmp[i-1];
-				while(w[i] != w[kmp[i]]){
-					if(kmp[i] == 0){
-						kmp[i] = -1;
-						break;
-					}
-					kmp[i] = kmp[kmp[i] - 1];
-				}
-				++kmp[i];
+
+const int kN = 10001;
+int t, Q, fft[kN];
+string T, P;
+
+int solve() {
+	if (P.size() > T.size()) return 0;
+	fft[0] = -1;
+	fill(fft + 1, fft + P.size() + 1, 0);
+	for (int i = 1, j = 1; i < P.size(); ++i, j = i) {
+		while (P[i] != P[fft[j]] and j != 0) j = fft[j];
+		fft[i + 1] = fft[j] + 1;
+	}
+
+	int ans = 0;
+	for (int i = 0, j = 0; i + j < T.size(); ++j) {
+		if (T[i + j] == P[j]) {
+			if (j == P.size() - 1) {
+				++ans;
+				i += P.size() - fft[j + 1];
+				j -= P.size() - fft[j + 1];
 			}
-			for(int m = 0, i = 0; m < ss - ws + 1; ){
-				while(i < ws and w[i] == s[m + i]) ++i;
-				--i;
-				if(i == ws - 1) ++ans;
-				if(i == -1){
-					++m;
-					i = 0;
-				} else {
-					m = m + i - kmp[i] + 1;
-					i = kmp[i];
-				}
-			}
-			cout << ans << '\n';
+		} else {
+			i += j - fft[j];
+			j -= j - fft[j] + 1;
+			if (j < -1) j = -1;
 		}
 	}
+	return ans;
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+	cin >> t;
+	while (t --> 0) {
+		cin >> T >> Q;
+		for (int i = 0; i < Q; ++i) {
+			cin >> P;
+			cout << solve() << '\n';
+		}
+	}
+
+	return 0;
 }
