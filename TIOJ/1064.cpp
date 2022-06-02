@@ -6,7 +6,7 @@ using namespace std;
 template<class...T>void SDF(const char* s,T...a){int c=sizeof...(T);if(!c){cerr<<"\033[1;32mvoid\033[0m\n";return;}(cerr<<"\033[1;32m("<<s<<") = (",...,(cerr<<a<<(--c?", ":")\033[0m\n")));}
 #else
 #define debug(...) ((void)0)
-#endif
+endif
 
 #pragma GCC optimize("Ofast","unroll-loops","fast-math")
 #include<unistd.h>
