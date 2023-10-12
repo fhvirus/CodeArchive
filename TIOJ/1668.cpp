@@ -1,53 +1,28 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-constexpr int MAXN = 50000;
+int main() {
+  cin.tie(0)->sync_with_stdio(0);
+  cin.exceptions(cin.failbit);
 
-vector<bool> isPrime(MAXN+1, true);
-vector<int> primes;
-void sieve(){
-	for(int i = 2; i <= MAXN; i++){
-		if(isPrime[i]) primes.push_back(i);
-		for(auto p: primes){
-			if(i*p > MAXN) break;
-			isPrime[i*p] = false;
-			if(!(i%p)) break;
-		}
-	}
-}
+  const int kN = 200002;
+  const int kS = 46341; // ceil(sqrt(INT_MAX))
+  bitset<kN> not_prime;
 
+  int T;
+  cin >> T;
+  while (T --> 0) {
+    uint32_t L, R;
+    cin >> L >> R;
 
-bool shai[200005];
-int main(){
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	cout.tie(0);
+    not_prime.reset();
+    for (uint32_t i = 2; i < kS and i * i <= R; ++i) {
+      for (uint32_t j = max(((L + i - 1) / i) * i, 2 * i); j <= R; j += i)
+        not_prime[j - L] = 1;
+    }
 
-	sieve();
-	int T, l, r, ans, mult;
-	bool yn;
-	cin >> T;
-	while(T--){
-		cin >> l >> r;
-		ans = 0;
-		for(int i = 0; i<=r-l; i++)shai[i]=true;
-		for(auto i: primes){
-			if(i > r) break;
-			mult = max(l/i + (l%i? 1:0), 2);
-			for(; i*mult <= r; mult++){
-				//cout << i*mult << ' ';
-				shai[i*mult-l] = false;
-			}
-		}
-		//cout << '\n';
-		for(int i = 0; i <= r-l; i++){
-			//cout << i+l << ' ' << shai[i] << '\n';
-			ans += shai[i];
-		}
-		cout << ans << '\n';
-	}
+    cout << (R - L + 1) - not_prime.count() << '\n';
+  }
 
-	return 0;
+  return 0;
 }
