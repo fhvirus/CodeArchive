@@ -1,10 +1,18 @@
-#include<cstdio>
-int main(){
-	int k;
-	scanf("%d", &k);
-	for(int i = 1; i <= k; ++i){
-		for(int j = 1; j <= (1<<i)-1; ++j)
-			putchar_unlocked(31 - __builtin_clz(j & -j) + 'a');
-		putchar_unlocked('\n');
-	}
+// Ref: https://oeis.org/A062714
+#include <cstdio>
+
+int main() {
+  int X;
+  scanf("%d", &X);
+  puts("a");
+  puts("aba");
+  for (int i = 3; i <= X; ++i) {
+    for (int j = 0; j < i; ++j)
+      putchar('a' + j);
+    for (int j = 0; j < (i - 3) * (i - 1) + 2; ++j) {
+      if (j % (i - 2) == 0) putchar('a');
+      putchar('b' + j % (i - 1));
+    }
+    putchar('\n');
+  }
 }

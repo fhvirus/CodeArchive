@@ -1,29 +1,24 @@
-#pragma GCC optimize("Ofast")
-#pragma GCC optimize("unroll-loops")
-#pragma loop_opt(on)
-#include<unistd.h>
-#include<vector>
-#include<bitset>
-const int S = 1<<16;
-inline char readchar(){
-	static char buf[S], *p = buf, *q = buf;
-	return (p == q and (q = (p = buf) + read(0, buf, S)) == buf) ? -1 : *p++;
-}
-inline int R(){
-	int ans = 0; char c = readchar();
-	while(c < '0') c = readchar();
-	while(c >= '0') ans = ans * 10 + (c ^ '0'), c = readchar();
-	return ans;
-}
-inline long long g(long long n){
-	return n == 1 ? 1 : 1 + g(n - g(g(n-1)));
-}
+#include <cstdio>
+#include <algorithm>
 
-#include<cmath>
-const long double PHI = (1 + sqrtl(5)) / 2;
-int n;
-int main(){
-	while((n = R() + 1) != 1){
-		printf("%d\n", (int)(powl(PHI, 2 - PHI) * powl(n, PHI-1)));
-	}
+const int kU = 1000001;
+int num_of_occ[kU];
+long long pre[kU];
+
+int main() {
+
+  num_of_occ[1] = 1;
+  num_of_occ[2] = 2;
+  pre[1] = 1, pre[2] = 3;
+  for (int i = 3, j = 2; i < kU; ++i) {
+    while (pre[j] < i) ++j;
+    num_of_occ[i] = j;
+    pre[i] = pre[i - 1] + num_of_occ[i];
+  }
+
+  long long n;
+  while (scanf("%lld", &n) != EOF and n != 0)
+    printf("%d\n", (int) (std::lower_bound(pre, pre + kU, n) - pre));
+
+  return 0;
 }

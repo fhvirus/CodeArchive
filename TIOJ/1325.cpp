@@ -1,28 +1,27 @@
-#pragma GCC optimize("Ofast")
-#pragma GCC optimize("unroll-loops")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
-#pragma loop_opt(on)
-#include<cstdio>
-inline int R(){
-	int ans = 0, c = getchar_unlocked();
-	while((c<'0'||c>'9')&&c!=EOF) c=getchar_unlocked();
-	while(c>='0'&&c<='9') ans=(ans<<3)+(ans<<1)+(c^'0'), c=getchar_unlocked();
-	return ans;
-}
+#include <cstdio>
 
-#include<cstring>
-int t, n, dp[100001], ans;
+const int kN = 100001;
+int t, n, wei[kN], ans[kN];
 
-int main(){
-	for(int n = 0; n <= 10; ++n){
-		ans = 0;
-		memset(dp, 0, n+1<<2);
-		for(int i = 1; i <= n; ++i){
-			if(n / i - 1 > dp[i])
-				for(int j = i * 2; j <= n; j += i)
-					++dp[j];
-			else ans += dp[i];
-		}
-		printf("%d,", ans);
-	}
+int main() {
+  for (int i = 2; i < kN; ++i) {
+    ans[i] = ans[i - 1];
+    if (++wei[1] > 0) ++ans[i];
+    wei[i] -= 1;
+    for (int j = 2; j * j <= i; ++j) {
+      int k = i / j;
+      if (j * k != i) continue;
+      if (++wei[j] > 0) ++ans[i];
+      wei[i] -= 1;
+      if (j == k) continue;
+      if (++wei[k] > 0) ++ans[i];
+      wei[i] -= 1;
+    }
+  }
+
+  scanf("%d", &t);
+  while (t --> 0) {
+    scanf("%d", &n);
+    printf("%d\n", ans[n]);
+  }
 }

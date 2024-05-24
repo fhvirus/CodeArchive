@@ -1,38 +1,46 @@
-#include<iostream>
-#include<algorithm>
-#include<bitset>
-using namespace std;
+#include <cstdio>
+#include <algorithm>
 
-int N, M;
-bitset<100> mask;
-int dfs(int layer, int cnt, bitset<100> l, bitset<100> m, bitset<100> r){
-	l<<=1, r>>=1; l&=mask, r&=mask;
+// nm <= 120 ==> n <= 10
+// ans <= n (trivial)
+// ans <= m - 2 if m >= 3 (put on two diagonals and leave out corners)
 
-	if(layer >= N){
-		if(((l|m|r)&mask) == mask) return cnt;
-		else return 8e7;
-	}
+const int kN = 10, kM = 100;
+int n, m, ans;
 
-	bitset<100> tmp = ~(l|m|r), cur;
-	if(tmp.count() == 0) return dfs(layer + 1, cnt, l, m, r);
-	int ans = 8e7;
-	for(int i = 0; i < M; ++i){
-		if(tmp[i]){
-			cur[i] = 1;
-			ans = min(ans, dfs(layer+1, cnt+1, l|cur, m|cur, r|cur));
-			cur[i] = 0;
-		}
-	}
-	// ans = min(ans, dfs(layer+1, cnt, l, m, r));
-	return ans;
+bool hor[kN], ver[kM], dia[kN + kM], ant[kN + kM];
+void dfs(int i, int c) {
+  if (c >= ans) return;
+  if (i == n) {
+    for (int x = 0; x < n; ++x)
+      for (int y = 0; y < m; ++y)
+        if (!hor[x] and !ver[y] and !dia[y - x + n - 1] and !ant[x + y])
+          return;
+    ans = c;
+    return;
+  }
+  hor[i] = true;
+  for (int j = 0; j < m; ++j) {
+    if (ver[j] or dia[j - i + n - 1] or ant[i + j]) continue;
+    ver[j] = dia[j - i + n - 1] = ant[i + j] = true;
+    dfs(i + 1, c + 1);
+    ver[j] = dia[j - i + n - 1] = ant[i + j] = false;
+  }
+  hor[i] = false;
+  dfs(i + 1, c);
 }
 
-int main(){
-	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-	cin >> N >> M;
-	// if(N > M) swap(N, M);
-	for(int i = 0; i < M; ++i)
-		mask[i] = 1;
-	cout << dfs(0, 0, bitset<100>(), bitset<100>(), bitset<100>());
-	return 0;
+int main() {
+
+  scanf("%d%d", &n, &m);
+  if (n > m) std::swap(n, m);
+
+  if ((n - 1) * (m + 3 * n) < n * m) printf("%d\n", n);
+  else {
+    ans = (m >= 3 ? std::min(n, m - 2) : n);
+    dfs(0, 0);
+    printf("%d\n", ans);
+  }
+
+  return 0;
 }
