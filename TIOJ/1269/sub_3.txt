@@ -1,0 +1,40 @@
+right
+
+find_1:
+
+pebble found_1
+move
+jump find_1
+
+found_1:
+get
+pebble found_ans
+move
+put
+move
+
+find_2:
+
+pebble found_2
+move
+jump find_2
+
+found_2:
+get
+left
+left
+move
+put
+
+back_to_corner:
+border arrive_corner
+move
+jump back_to_corner
+
+arrive_corner:
+left
+left
+jump find_1
+
+found_ans:
+halt

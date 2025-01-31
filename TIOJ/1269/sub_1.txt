@@ -1,0 +1,13 @@
+left
+
+start:
+
+pebble has
+halt
+has:
+get
+left
+left
+move
+
+jump start

@@ -1,0 +1,93 @@
+left
+
+########## find the one pile with less stone ##########
+step_1:
+
+pebble has
+jump step_2
+has:
+get
+left
+move
+put
+left
+left
+move
+left
+border step_1_move_right
+move
+jump step_1
+step_1_move_right:
+left
+left
+move
+left
+left
+jump step_1
+
+########## store the record at (ans + 2, 0) ##########
+step_2:
+
+left
+left
+move
+move
+put
+left
+left
+move
+move
+move
+
+########## recover ##########
+
+# facing left at (0, 0)
+step_3:
+
+left
+move
+left
+left
+pebble step_3_continue
+jump step_3_next_column
+step_3_continue:
+get
+move
+put
+left
+jump step_3
+
+step_3_next_column:
+move
+left
+border step_3_move_right
+move
+jump step_4
+step_3_move_right:
+left
+left
+move
+left
+left
+jump step_3
+
+########## restore answer position ##########
+
+# facing left at (0, 0)
+step_4:
+
+left
+left
+move
+move
+
+pebble step_4_go_left_2
+move
+step_4_go_left_2:
+get
+left
+left
+move
+move
+
+halt

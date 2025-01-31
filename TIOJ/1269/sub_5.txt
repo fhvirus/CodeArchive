@@ -1,0 +1,541 @@
+jump f0_at_col_0
+f0_to_next_row:
+right
+border f1_start_row
+move
+right
+f0_to_col_0:
+border f0_at_col_0
+move
+jump f0_to_col_0
+f0_at_col_0:
+right
+f0_start_row:
+right
+f0_check_row:
+pebble f0_continue
+jump f0_found
+f0_continue:
+border f0_to_next_row
+move
+jump f0_check_row
+f1_to_next_row:
+right
+border f2_start_row
+move
+right
+f1_to_col_0:
+border f1_at_col_0
+move
+jump f1_to_col_0
+f1_at_col_0:
+right
+f1_start_row:
+right
+f1_check_row:
+get
+pebble f1_continue
+jump f1_found
+f1_continue:
+put
+border f1_to_next_row
+move
+jump f1_check_row
+f2_to_next_row:
+right
+border f3_start_row
+move
+right
+f2_to_col_0:
+border f2_at_col_0
+move
+jump f2_to_col_0
+f2_at_col_0:
+right
+f2_start_row:
+right
+f2_check_row:
+get
+get
+pebble f2_continue
+jump f2_found
+f2_continue:
+put
+put
+border f2_to_next_row
+move
+jump f2_check_row
+f3_to_next_row:
+right
+border f4_start_row
+move
+right
+f3_to_col_0:
+border f3_at_col_0
+move
+jump f3_to_col_0
+f3_at_col_0:
+right
+f3_start_row:
+right
+f3_check_row:
+get
+get
+get
+pebble f3_continue
+jump f3_found
+f3_continue:
+put
+put
+put
+border f3_to_next_row
+move
+jump f3_check_row
+f4_to_next_row:
+right
+border f5_start_row
+move
+right
+f4_to_col_0:
+border f4_at_col_0
+move
+jump f4_to_col_0
+f4_at_col_0:
+right
+f4_start_row:
+right
+f4_check_row:
+get
+get
+get
+get
+pebble f4_continue
+jump f4_found
+f4_continue:
+put
+put
+put
+put
+border f4_to_next_row
+move
+jump f4_check_row
+f5_to_next_row:
+right
+border f6_start_row
+move
+right
+f5_to_col_0:
+border f5_at_col_0
+move
+jump f5_to_col_0
+f5_at_col_0:
+right
+f5_start_row:
+right
+f5_check_row:
+get
+get
+get
+get
+get
+pebble f5_continue
+jump f5_found
+f5_continue:
+put
+put
+put
+put
+put
+border f5_to_next_row
+move
+jump f5_check_row
+f6_to_next_row:
+right
+border f7_start_row
+move
+right
+f6_to_col_0:
+border f6_at_col_0
+move
+jump f6_to_col_0
+f6_at_col_0:
+right
+f6_start_row:
+right
+f6_check_row:
+get
+get
+get
+get
+get
+get
+pebble f6_continue
+jump f6_found
+f6_continue:
+put
+put
+put
+put
+put
+put
+border f6_to_next_row
+move
+jump f6_check_row
+f7_to_next_row:
+right
+border f8_start_row
+move
+right
+f7_to_col_0:
+border f7_at_col_0
+move
+jump f7_to_col_0
+f7_at_col_0:
+right
+f7_start_row:
+right
+f7_check_row:
+get
+get
+get
+get
+get
+get
+get
+pebble f7_continue
+jump f7_found
+f7_continue:
+put
+put
+put
+put
+put
+put
+put
+border f7_to_next_row
+move
+jump f7_check_row
+f8_to_next_row:
+right
+border f9_start_row
+move
+right
+f8_to_col_0:
+border f8_at_col_0
+move
+jump f8_to_col_0
+f8_at_col_0:
+right
+f8_start_row:
+right
+f8_check_row:
+get
+get
+get
+get
+get
+get
+get
+get
+pebble f8_continue
+jump f8_found
+f8_continue:
+put
+put
+put
+put
+put
+put
+put
+put
+border f8_to_next_row
+move
+jump f8_check_row
+f9_to_next_row:
+right
+border f10_start_row
+move
+right
+f9_to_col_0:
+border f9_at_col_0
+move
+jump f9_to_col_0
+f9_at_col_0:
+right
+f9_start_row:
+right
+f9_check_row:
+get
+get
+get
+get
+get
+get
+get
+get
+get
+pebble f9_continue
+jump f9_found
+f9_continue:
+put
+put
+put
+put
+put
+put
+put
+put
+put
+border f9_to_next_row
+move
+jump f9_check_row
+f10_to_next_row:
+right
+border f11_start_row
+move
+right
+f10_to_col_0:
+border f10_at_col_0
+move
+jump f10_to_col_0
+f10_at_col_0:
+right
+f10_start_row:
+right
+f10_check_row:
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+pebble f10_continue
+jump f10_found
+f10_continue:
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+border f10_to_next_row
+move
+jump f10_check_row
+f11_to_next_row:
+right
+border f12_start_row
+move
+right
+f11_to_col_0:
+border f11_at_col_0
+move
+jump f11_to_col_0
+f11_at_col_0:
+right
+f11_start_row:
+right
+f11_check_row:
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+pebble f11_continue
+jump f11_found
+f11_continue:
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+border f11_to_next_row
+move
+jump f11_check_row
+f12_to_next_row:
+right
+border f13_start_row
+move
+right
+f12_to_col_0:
+border f12_at_col_0
+move
+jump f12_to_col_0
+f12_at_col_0:
+right
+f12_start_row:
+right
+f12_check_row:
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+pebble f12_continue
+jump f12_found
+f12_continue:
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+border f12_to_next_row
+move
+jump f12_check_row
+f13_to_next_row:
+right
+border f14_start_row
+move
+right
+f13_to_col_0:
+border f13_at_col_0
+move
+jump f13_to_col_0
+f13_at_col_0:
+right
+f13_start_row:
+right
+f13_check_row:
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+pebble f13_continue
+jump f13_found
+f13_continue:
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+border f13_to_next_row
+move
+jump f13_check_row
+f14_to_next_row:
+right
+border f15_start_row
+move
+right
+f14_to_col_0:
+border f14_at_col_0
+move
+jump f14_to_col_0
+f14_at_col_0:
+right
+f14_start_row:
+right
+f14_check_row:
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+pebble f14_continue
+jump f14_found
+f14_continue:
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+put
+border f14_to_next_row
+move
+jump f14_check_row
+f14_found:
+put
+f13_found:
+put
+f12_found:
+put
+f11_found:
+put
+f10_found:
+put
+f9_found:
+put
+f8_found:
+put
+f7_found:
+put
+f6_found:
+put
+f5_found:
+put
+f4_found:
+put
+f3_found:
+put
+f2_found:
+put
+f1_found:
+put
+f0_found:
+f15_start_row:

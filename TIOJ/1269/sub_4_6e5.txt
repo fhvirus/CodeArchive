@@ -1,0 +1,79 @@
+########## bring stones to the first column then collect ############
+
+left
+left
+
+find_in_row_start:
+left
+
+find_in_row:
+move
+pebble bring_back_to_col_0
+border found_all_in_row
+jump find_in_row
+
+bring_back_to_col_0:
+get
+left
+left
+bring_back_to_col_0_check:
+border at_col_0
+move
+jump bring_back_to_col_0_check
+at_col_0:
+put
+left
+left
+jump find_in_row
+
+found_all_in_row:
+left
+left
+found_all_in_row_check:
+border found_at_col_0
+move
+jump found_all_in_row_check
+found_at_col_0:
+left
+border retrieve_all_stones
+move
+jump find_in_row_start
+
+########## retrive all stones at column 0 ##########
+
+retrieve_all_stones:
+
+left
+left
+
+reset_pos_check:
+border reset_at_row_0
+move
+jump reset_pos_check
+
+reset_at_row_0:
+left
+left
+
+find_in_col:
+move
+pebble bring_back_to_row_0
+border found_all_in_col
+jump find_in_col
+
+bring_back_to_row_0:
+get
+left
+left
+bring_back_to_row_0_check:
+border at_row_0
+move
+jump bring_back_to_row_0_check
+at_row_0:
+put
+left
+left
+jump find_in_col
+
+found_all_in_col:
+halt

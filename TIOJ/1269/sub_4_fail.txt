@@ -1,0 +1,279 @@
+# 1A: collect & put (1 ~ s, 0)
+#     collect & put (1 ~ s, s)
+# 1B: collect (0, 1 ~ s)
+# 2: while not at (s, ?):
+#   while not pebble: move
+#   if pebble: check
+# 3: clear (1 ~ s, 0) and (1 ~ s, s)
+
+
+########## Step 1: collect borders ##########
+
+###### Step 1A: collect vertical borders
+
+right
+
+1A_to_col_s:
+border 1A_at_col_s
+move
+jump 1A_to_col_s
+
+1A_at_col_s:
+right
+
+1A_collect_col:
+move
+1A_find_in_col:
+pebble 1A_found
+border 1A_found_all
+move
+jump 1A_find_in_col
+
+1A_found:
+left
+left
+get
+1A_to_row_0:
+move
+border 1A_at_row_0
+jump 1A_to_row_0
+1A_at_row_0:
+put
+left
+left
+jump 1A_collect_col
+
+1A_found_all:
+left
+left
+1A_put_and_reset:
+border 1A_check_fin
+put
+move
+jump 1A_put_and_reset
+
+1A_check_fin:
+left
+border 1A_fin
+1A_to_col_0:
+move
+border 1A_at_col_0
+jump 1A_to_col_0
+1A_at_col_0:
+left
+jump 1A_collect_col
+
+1A_fin:
+
+### Step 1B: collect top border
+
+left
+left
+
+1B_find_in_row:
+move
+pebble 1B_found
+border 1B_found_all
+jump 1B_find_in_row
+
+1B_found:
+left
+left
+get
+1B_to_col_0:
+move
+border 1B_at_col_0
+jump 1B_to_col_0
+1B_at_col_0:
+put
+left
+left
+jump 1B_find_in_row
+
+1B_found_all:
+halt
+
+########## Step 2: collect middle ones ##########
+
+### Step 2A: moving left, starting facing east at (?-1, s)
+
+2A_start:
+right
+border fin
+move
+right
+
+# unroll loops???
+2A_find_in_row:
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+move
+pebble 2A_found
+jump 2A_find_in_row
+
+2A_found:
+border 2B_start
+get
+2A_to_col_0:
+move
+border 2A_at_col_0
+move
+border 2A_at_col_0
+move
+border 2A_at_col_0
+move
+border 2A_at_col_0
+jump 2A_to_col_0
+
+2A_at_col_0:
+get
+right
+2A_to_row_0:
+move
+border 2A_at_row_0
+move
+border 2A_at_row_0
+move
+border 2A_at_row_0
+move
+border 2A_at_row_0
+jump 2A_to_row_0
+
+2A_at_row_0:
+put
+left
+left
+2A_to_last_row:
+move
+pebble 2A_to_last_row
+put
+right
+jump 2B_start
+
+### Step 2B: moving right, starting facing west at (?-1, 0)
+
+2B_start:
+left
+# no fin, guarantee to stop at (s, s) facing south
+move
+left
+
+2B_find_in_row:
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+move
+pebble 2B_found
+jump 2B_find_in_row
+
+2B_found:
+border 2A_start
+get
+left
+left
+jump 2A_to_col_0
+
+########## End ##########
+
+# facing south at (s, s)
+fin:
+left
+left
+
+fin_clear_col:
+get
+move
+border fin_col_cleared
+jump fin_clear_col
+
+fin_col_cleared:
+left
+border end
+fin_to_col_0:
+move
+border fin_at_col_0
+jump fin_to_col_0
+
+fin_at_col_0:
+left
+fin_to_row_s:
+move
+border fin
+jump fin_to_row_s
+
+end:
