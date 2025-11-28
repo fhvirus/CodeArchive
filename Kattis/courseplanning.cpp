@@ -1,53 +1,64 @@
-#include<iostream>
-#include<utility>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define OW0 ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-typedef long long ll;
-const int MAXN = 2e5+1;
-const ll INF = 8e7 * 8e7;
+int main() {
+  cin.tie(0)->sync_with_stdio(0);
+  cin.exceptions(cin.failbit);
 
-pair<string, int> course[MAXN];
-ll dp1[MAXN], dp2[MAXN], dp3[MAXN];
+  int n, k;
+  cin >> n >> k;
 
-int main(){OW0
-    int n, k;
-    cin >> n >> k;
-    string name;
-    for(int i = 1, diff; i <= n; i++){
-        cin >> name >> diff;
-        course[i] = {name, diff};
+  map<string, pair<int, int>> mp;
+  vector<int64_t> single(1, 0);
+  for (int i = 0; i < n; ++i) {
+    string s;
+    int d;
+    cin >> s >> d;
+    char t = s.back();
+    if (isalpha(t)) single.push_back(d);
+    else {
+      s.pop_back();
+      if (t == '1') mp[s].first = d;
+      else mp[s].second = d;
     }
+  }
 
-    for(int i = 0; i <= n; i++){
-        dp3[i] = INF;
-    }
+  vector<pair<int, int>> dubble;
+  for (auto [key, val] : mp) {
+    auto [i, ii] = val;
+    if (i <= ii) {
+      single.push_back(i);
+      single.push_back(ii);
+    } else dubble.emplace_back(i + ii, i);
+  }
 
-    sort(course + 1, course + n + 1);
-    for(int j = 1; j <= k; j++){
-        for(int i = 1; i <= n; i++){
-            auto c = course[i];
-            if(c.first.back() > '9'){
-                dp3[i] = min(dp3[i-1], dp2[i-1] + c.second);
-            } else {
-                dp3[i] = min(dp3[i-1],
-                         min(dp2[i-1] + c.second,
-                             dp1[i-1] + c.second + course[i+1].second));
-                ++i;
-                dp1[i] = dp1[i-1];
-                dp2[i] = dp2[i-1];
-                dp3[i] = dp3[i-1];
-            }
-        }
-        //swaps
-        for(int i = 0; i <= n; i++){
-            // cout << dp3[i] << ' ';
-            dp1[i] = dp2[i];
-            dp2[i] = dp3[i];
-        }
-        // cout << '\n';
-    }
-    cout << dp2[n];
-    return 0;
+  sort(begin(single), end(single));
+  partial_sum(begin(single), end(single), begin(single));
+
+  sort(begin(dubble), end(dubble));
+  int m = (int) dubble.size();
+  vector<int> min_extra(m, INT_MAX);
+  for (int i = m - 1; i >= 0; --i) {
+    min_extra[i] = min(min_extra[i], dubble[i].second);
+    if (i > 0) min_extra[i - 1] = min_extra[i];
+  }
+  for (int i = 0, cur_max = 0; i < m; ++i) {
+    cur_max = max(cur_max, dubble[i].first - dubble[i].second);
+    min_extra[i] = min(min_extra[i], dubble[i].first - cur_max);
+  }
+
+  vector<int64_t> cost(m * 2 + 1);
+  for (int i = 0; i < m; ++i) {
+    cost[1 + i * 2] = cost[i * 2] + min_extra[i];
+    cost[1 + i * 2 + 1] = cost[i * 2] + dubble[i].first;
+  }
+
+  int64_t ans = LLONG_MAX;
+  for (int sl = min(k, (int) single.size() - 1), sr = k - sl;
+      sl >= 0 and sr < (int) cost.size(); --sl, ++sr)
+    ans = min(ans, single[sl] + cost[sr]);
+
+  cout << ans << '\n';
+
+  return 0;
 }
