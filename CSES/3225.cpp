@@ -1,4 +1,3 @@
-// Fermat polygonal number theorem where n = 3
 #include <bits/stdc++.h>
 using namespace std;
 
