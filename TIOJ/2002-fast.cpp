@@ -1,3 +1,4 @@
+#pragma GCC optimize("Ofast")
 #include <cstdio>
 #include <algorithm>
 using namespace std;
@@ -11,20 +12,21 @@ int get_int() {
   } while ('0' <= c and c <= '9');
   return res;
 }
-int ceil_div(int a, int b) { return (a + b - 1) / b; }
+constexpr int ceil_div(int a, int b) { return (a + b - 1) / b; }
 
-const int kN = 200000, kS = 10000, kB = kN / kS;
-int N, M, a[kS], b[kS], s[kS], ans[kS], qb, sb;
-long q_pos[kB], s_pos[kB];
+const int kN = 200000, kSQ = 15343, kSS = 19313;
+const int kBQ = ceil_div(kN, kSQ), kBS = ceil_div(kN, kSS);
+int N, M, a[kSQ], s[kSS], ans[kSQ], qb, sb;
+long q_pos[kBQ], s_pos[kBS];
 
 void init_pos() {
   for (int i = 0; i < M; ++i) {
-    if (i % kS == 0) q_pos[i / kS] = ftell(stdin);
+    if (i % kSQ == 0) q_pos[i / kSQ] = ftell(stdin);
     get_int();
     get_int();
   }
   for (int i = 0; i < N; ++i) {
-    if (i % kS == 0) s_pos[i / kS] = ftell(stdin);
+    if (i % kSS == 0) s_pos[i / kSS] = ftell(stdin);
     get_int();
   }
 }
@@ -33,30 +35,34 @@ int main() {
   N = get_int();
   M = get_int();
 
-  qb = ceil_div(M, kS);
-  sb = ceil_div(N, kS);
+  qb = ceil_div(M, kSQ);
+  sb = ceil_div(N, kSS);
   init_pos();
 
   for (int qi = 0; qi < qb; ++qi) {
-    int ql = qi * kS, qr = min(ql + kS, M), qn = qr - ql;
+    int ql = qi * kSQ, qr = min(ql + kSQ, M), qn = qr - ql;
     fill(ans, ans + qn, 0);
 
     for (int si = 0; si < sb; ++si) {
-      int sl = si * kS, sr = min(sl + kS, N), sn = sr - sl;
+      int sl = si * kSS, sr = min(sl + kSS, N), sn = sr - sl;
 
       fseek(stdin, q_pos[qi], SEEK_SET);
       for (int i = 0; i < qn; ++i) {
-        a[i] = max(0, get_int() - 1 - sl);
-        b[i] = max(min(sn, get_int() - sl), a[i]);
+        int l = min(max(0, get_int() - 1 - sl), sn),
+            r = max(min(sn, get_int() - sl), l);
+        a[i] = (r << 16 | l);
       }
 
       fseek(stdin, s_pos[si], SEEK_SET);
       for (int i = 0; i < sn; ++i) s[i] = get_int();
 
       for (int len = 1; len <= sn; len *= 2) {
-        for (int i = 0; i < qn; ++i) if ((b[i] - a[i]) & len) {
-          ans[i] = max(ans[i], s[a[i]]);
-          a[i] += len;
+        for (int i = 0; i < qn; ++i) {
+          int r = (a[i] >> 16), l = (a[i] & 0xffff);
+          if ((r - l) & len) {
+            ans[i] = max(ans[i], s[l]);
+            a[i] += len;
+          }
         }
         for (int i = 0; i + len < sn; ++i)
           s[i] = max(s[i], s[i + len]);
